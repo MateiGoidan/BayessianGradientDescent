@@ -194,8 +194,7 @@ class BayesNet:
 
         with open(file) as fin:
             # read the number of vars involved
-            # and the number of queries
-            N, M = [int(x) for x in next(fin).split()]
+            N = int(next(fin).strip())
 
             # read the vars, their parents and the CPD
             for i in range(N):
@@ -207,25 +206,6 @@ class BayesNet:
                 parent_vars = [bn_dict[v] for v in parsed_parent_vars]
                 cpd_df = BayesNet._create_cpd(parsed_var, parsed_parent_vars, parsed_cpd)
                 bn_dict[parsed_var] = BayesNode(var_name=parsed_var, parent_nodes=parent_vars, cpd=cpd_df)
-
-            # read the queries
-            for i in range(M):
-                queries, conds = next(fin).split('|')
-
-                query_vars = queries.split()
-                query_vars_dict = dict([(q.split("=")[0], q.split("=")[1]) for q in query_vars])
-
-                cond_vars = conds.split()
-                cond_vars_dict = dict([(c.split("=")[0], c.split("=")[1]) for c in cond_vars])
-
-                query_list.append({
-                    "query": query_vars_dict,
-                    "cond": cond_vars_dict
-                })
-
-            # read the answers
-            for i in range(M):
-                query_list[i]["answer"] = float(next(fin).strip())
 
         return bn_dict, query_list
 
@@ -316,3 +296,6 @@ class BayesNet:
     def __repr__(self):
         return self.__str__()
 
+if __name__ == "__main__":
+    bn = BayesNet(bn_file="data/bn_learning")
+    print(bn.pretty_print_str())
