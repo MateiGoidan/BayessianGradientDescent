@@ -48,9 +48,12 @@ for epoch in range(EPOCHS):
             p = p_hat if x_i == 1 else (1 - p_hat)
             total_log_likelihood += np.log(p + 1e-9) # avoid log(0)
 
-    cross_entropy = -total_log_likelihood / (len(df) * len(bn.nodes))
-    cross_entropy_history.append(cross_entropy)
-    print(f"Epoch {epoch+1}/{EPOCHS} - Cross-Entropy: {cross_entropy:.4f}")
+    num_variables = len(bn.nodes)
+    total_cross_entropy = -total_log_likelihood / len(df)
+    avg_cross_entropy_per_variable = total_cross_entropy / num_variables
+
+    cross_entropy_history.append(avg_cross_entropy_per_variable)
+    print(f"Epoch {epoch+1}/{EPOCHS} - Cross-Entropy: {total_cross_entropy:.4f}")
 
 # Plot cross-entropy
 plt.plot(cross_entropy_history)
